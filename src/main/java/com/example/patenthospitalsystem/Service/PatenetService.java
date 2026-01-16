@@ -1,5 +1,6 @@
 package com.example.patenthospitalsystem.Service;
 
+import com.example.patenthospitalsystem.Exception.emailAlreadyExist;
 import com.example.patenthospitalsystem.Mapper.PatientMapper;
 import com.example.patenthospitalsystem.Repository.Patentrepo;
 import com.example.patenthospitalsystem.dto.PatientResponseDto;
@@ -20,6 +21,9 @@ public class PatenetService {
         return patients.stream().map(PatientMapper::mapToPatientResponseDto).toList();
     }
     public PatientResponseDto  createPatient(patientRequestDto patient){
+        if(patentrepo.existsByEmail(patient.getEmail())){
+            throw new emailAlreadyExist("patent already exit"+patient.getEmail());
+        }
        Patient newPatient = patentrepo.save(PatientMapper.mapToPatient(patient));
        return PatientMapper.mapToPatientResponseDto(newPatient);
 
